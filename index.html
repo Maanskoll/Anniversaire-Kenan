@@ -43,40 +43,16 @@
             animation-delay: 1s; /* commence une seconde après le chargement */
             visibility: hidden; /* rend invisible avant animation */
         }
-
-        /* Animation clé */
-        @keyframes fadeIn {
-            0% { 
-                opacity: 0;
-                visibility: visible;
-            }
-            100% {
-                opacity: 0.6;
-                visibility: visible;
-            }
         }
     </style>
 </head>
 <body>
-    <h1> </h1>
-    <div class="indice" id="indice"> 
-        Patience 
-    </div>
+    <h1> Patience ... </h1>
     
     <div class="note">
         Surveille régulièrement cette page.<br>
         PS : à l'avenir, il faudra probablement rafraîchir la page si ça ne fonctionne pas :)
     </div>
-    
-      <script>
-        // Quand on clique sur le gâteau → le texte apparaît
-        const gateau = document.getElementById('gateau');
-        const indice = document.getElementById('indice');
-
-        gateau.addEventListener('click', () => {
-            indice.classList.toggle('visible'); // Affiche ou cache le texte
-        });
-    </script>
 
     <!-- Si tu veux ajouter une image, décommente la ligne suivante et mets ton URL d'image -->
     <!-- <img id="imageIndice" src="URL_DE_TON_IMAGE" alt="Indice" style="max-width:50%; margin-top:20px;"> -->

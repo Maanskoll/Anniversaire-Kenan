@@ -1,60 +1,151 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Anniversaire Kénan</title>
-    <style>
-        body {
-            font-family: Courier New, sans-serif;
-            text-align: center;
-            padding: 60px;
-            background-color: #d9ead3;
-            color: #2f4f4f
-        }
-        h1 {
-            font-size: 2.2em;
-            color: #355e3b; /* vert légèrement plus profond pour le titre */
-            margin-bottom: 30px;
-            letter-spacing: 1px;
-        }
+<meta charset="UTF-8">
+<title>Accès restreint - Anniversaire Kénan</title>
+<style>
+  body {
+    background-color: black;
+    color: #00ff99;
+    font-family: "Courier New", monospace;
+    font-size: 1.1em;
+    padding: 40px;
+    overflow: hidden;
+  }
+  #intro, #console, #success {
+    width: 80%;
+    margin: 50px auto;
+    border: 1px solid #00ff99;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px #00ff99;
+  }
+  input {
+    background: black;
+    border: none;
+    border-bottom: 1px solid #00ff99;
+    color: #00ff99;
+    font-family: "Courier New", monospace;
+    width: 80%;
+    font-size: 1em;
+    margin-top: 10px;
+    outline: none;
+  }
+  #success {
+    display: none;
+    text-align: center;
+    font-size: 3em;
+    color: #00ff99;
+    margin-top: 50px;
+    animation: flicker 2s infinite alternate;
+  }
+  @keyframes flicker {
+    from { opacity: 1; }
+    to { opacity: 0.5; }
+  }
 
-        
-        /* Le message caché */
-        .indice {
-            font-size: 1.8em;
-            margin-top: 50px;
-            color: #1f3524;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
-
-        /* --- Style de la note en bas de page --- */
-        .note {
-            position: fixed;
-            bottom: 10px;
-            left: 0;
-            width: 100%;
-            font-size: 0.8em;
-            color: #4d5d4d;
-            font-style: italic;
-            opacity: 0;
-            text-align: center;
-            animation: fadeIn 2.5s ease-in forwards;
-            animation-delay: 1s; /* commence une seconde après le chargement */
-            visibility: hidden; /* rend invisible avant animation */
-        }
-        }
-    </style>
+  /* Boîte d'indice */
+  #hintBox {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #00ff99;
+    border: 1px solid #00ff99;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px #00ff99;
+    width: 60%;
+    text-align: center;
+    animation: fadeIn 2s ease forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, 50px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+</style>
 </head>
 <body>
-    <h1> Patience ... </h1>
-    
-    <div class="note">
-        Surveille régulièrement cette page.<br>
-        PS : à l'avenir, il faudra probablement rafraîchir la page si ça ne fonctionne pas :)
-    </div>
 
-    <!-- Si tu veux ajouter une image, décommente la ligne suivante et mets ton URL d'image -->
-    <!-- <img id="imageIndice" src="URL_DE_TON_IMAGE" alt="Indice" style="max-width:50%; margin-top:20px;"> -->
+<!-- INTRO -->
+<div id="intro"></div>
+
+<!-- CONSOLE -->
+<div id="console" style="display:none;">
+  <div id="message">
+    SYSTEM ERROR: Missing essential component.<br>
+    Please enter the missing element to continue.
+  </div>
+  <input type="text" id="input" placeholder="> type here...">
+</div>
+
+<!-- SUCCESS -->
+<div id="success">
+  ACCESS GRANTED<br>
+  THE FIRST KEY IS: <span style="color:white;">E</span>
+</div>
+
+<!-- HINT -->
+<div id="hintBox">
+  <strong>Hint:</strong><br>
+  Le temps ne revient pas, mais certaines choses l’évoquent.<br>
+  Les plus vieilles conservent les traces du rivage.<br>
+</div>
+
+<audio id="typingSound" src="https://cdn.pixabay.com/download/audio/2021/08/09/audio_0a5c7e71f3.mp3?filename=keyboard-typing-1-1.mp3" preload="auto"></audio>
+
+<script>
+  const introText = "Les systèmes de communication semblent perturbés...\nUne seule chose manque pour rétablir le lien.";
+  const introDiv = document.getElementById('intro');
+  const consoleBox = document.getElementById('console');
+  const success = document.getElementById('success');
+  const message = document.getElementById('message');
+  const input = document.getElementById('input');
+  const typingSound = document.getElementById('typingSound');
+  const hintBox = document.getElementById('hintBox');
+
+  let i = 0;
+  let attempts = 0;
+
+  // Effet d'affichage lettre par lettre
+  function typeIntro() {
+    if (i < introText.length) {
+      introDiv.innerHTML += introText.charAt(i);
+      i++;
+      typingSound.currentTime = 0;
+      typingSound.play();
+      setTimeout(typeIntro, 150);
+    } else {
+      typingSound.pause();
+      setTimeout(() => {
+        introDiv.style.display = 'none';
+        consoleBox.style.display = 'block';
+      }, 1000);
+    }
+  }
+
+  // Lancer l'intro
+  typeIntro();
+
+  // Gestion du mot de passe
+  input.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      const value = input.value.trim().toLowerCase();
+      if (value === 'coquillage') {
+        consoleBox.style.display = 'none';
+        success.style.display = 'block';
+      } else {
+        attempts++;
+        message.textContent = 'ACCESS DENIED. Try again.';
+        input.value = '';
+        if (attempts === 10) {
+          hintBox.style.display = 'block';
+        }
+      }
+    }
+  });
+</script>
 </body>
 </html>

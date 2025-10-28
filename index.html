@@ -1,151 +1,161 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Accès restreint - Anniversaire Kénan</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>503 — Service temporairement indisponible</title>
 <style>
-  body {
-    background-color: black;
-    color: #00ff99;
-    font-family: "Courier New", monospace;
-    font-size: 1.1em;
-    padding: 40px;
-    overflow: hidden;
-  }
-  #intro, #console, #success {
-    width: 80%;
-    margin: 50px auto;
-    border: 1px solid #00ff99;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px #00ff99;
-  }
-  input {
-    background: black;
-    border: none;
-    border-bottom: 1px solid #00ff99;
-    color: #00ff99;
-    font-family: "Courier New", monospace;
-    width: 80%;
-    font-size: 1em;
-    margin-top: 10px;
-    outline: none;
-  }
-  #success {
-    display: none;
-    text-align: center;
-    font-size: 3em;
-    color: #00ff99;
-    margin-top: 50px;
-    animation: flicker 2s infinite alternate;
-  }
-  @keyframes flicker {
-    from { opacity: 1; }
-    to { opacity: 0.5; }
-  }
-
-  /* Boîte d'indice */
-  #hintBox {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.9);
-    color: #00ff99;
-    border: 1px solid #00ff99;
-    padding: 15px 25px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px #00ff99;
-    width: 60%;
-    text-align: center;
-    animation: fadeIn 2s ease forwards;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translate(-50%, 50px); }
-    to { opacity: 1; transform: translate(-50%, 0); }
-  }
+:root{--bg-start:#0f1724;--bg-end:#0b1220;--muted:#6b7280;--mono:ui-monospace,SFMono-Regular,Menlo,Monaco,'Roboto Mono','Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;color:#e6eef8;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,var(--bg-start) 0%, var(--bg-end) 100%);}
+.container{width:90%;max-width:500px;padding:32px;background:rgba(255,255,255,0.02);border-radius:8px;box-shadow:0 10px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03);text-align:center;}
+.errorcode{font-family:var(--mono);font-weight:700;font-size:46px;margin-bottom:8px;color:#dbeafe;}
+h1{margin-bottom:6px;font-size:20px;}
+p.lead{margin-bottom:18px;color:var(--muted);font-size:13px;}
+.linklike{display:inline-block;padding:10px 14px;border-radius:6px;text-decoration:none;font-weight:700;background:transparent;border:1px solid rgba(255,255,255,0.03);cursor:pointer;color:#dbeafe;font-size:15px;letter-spacing:0.4px;position:relative;}
+.glitchword{display:inline-block;overflow:visible;}
+.glitchword .slice{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;}
+.slice.s1{clip-path:inset(0 0 66% 0);transform:translateX(-1px);filter:drop-shadow(0 0 6px rgba(11,92,255,0.12));opacity:0.92;}
+.slice.s2{clip-path:inset(34% 0 34% 0);opacity:0.95;}
+.slice.s3{clip-path:inset(66% 0 0 0);transform:translateX(1px);filter:drop-shadow(0 0 6px rgba(255,0,85,0.10));opacity:0.92;}
+.glitchword .base{position:absolute;left:0;top:0;color:transparent;}
+.glitchword.active .s1{animation:glitchBurstA 460ms linear 1;}
+.glitchword.active .s2{animation:glitchBurstB 520ms linear 1;}
+.glitchword.active .s3{animation:glitchBurstA 480ms linear 1 reverse;}
+.glitchword.active .base{animation:letterFlash 480ms linear 1;}
+@keyframes glitchBurstA{0%{transform:translateX(0)}10%{transform:translateX(-10px) skewX(-8deg)}30%{transform:translateX(12px) skewX(6deg)}50%{transform:translateX(-8px) skewX(-5deg)}70%{transform:translateX(6px) skewX(3deg)}100%{transform:translateX(0) skewX(0)}}
+@keyframes glitchBurstB{0%{transform:translateX(0)}15%{transform:translateX(8px) skewX(6deg)}40%{transform:translateX(-9px) skewX(-6deg)}60%{transform:translateX(7px) skewX(4deg)}100%{transform:translateX(0) skewX(0)}}
+@keyframes letterFlash{0%{text-shadow:none}20%{text-shadow:0 0 8px rgba(255,255,255,0.9)}40%{text-shadow:0 0 12px rgba(255,200,200,0.85)}60%{text-shadow:0 0 10px rgba(200,220,255,0.85)}100%{text-shadow:none}}
+.shake{animation:shakeIt 0.4s ease-in-out;}
+@keyframes shakeIt{0%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}100%{transform:translateX(0);}}
+#bootOverlay{position:fixed; inset:0; display:flex; align-items:center; justify-content:center;background:#020204; color:#dfeeff; z-index:9999; pointer-events:none; opacity:0;}
+#bootInner{width:90%; max-width:600px; text-align:left; font-family:var(--mono); font-size:14px; line-height:1.4; opacity:0;}
+.boot-line{opacity:0; transform:translateY(6px); color:#bcd1ff;}
+.boot-line.warn{color:#ffb3b3;}
+.boot-show{pointer-events:auto; opacity:1; animation:overlayIn 160ms ease-out forwards;}
+.boot-show .boot-line{animation:bootFade 360ms cubic-bezier(.2,.8,.2,1) forwards;}
+@keyframes bootFade{0%{opacity:0; transform:translateY(6px)}10%{opacity:1; transform:translateY(0)}90%{opacity:1}100%{opacity:1}}
+@keyframes overlayIn{from{opacity:0} to{opacity:1}}
+#gameWrap{display:none;margin-top:20px;}
+#questionBox{display:flex;flex-direction:column;gap:12px;margin-top:20px;}
+#questionBox input{padding:8px;font-size:16px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);color:#e6eef8;}
+#questionBox button{padding:10px;border-radius:6px;background:#0b5cff;color:white;border:none;cursor:pointer;}
 </style>
 </head>
 <body>
-
-<!-- INTRO -->
-<div id="intro"></div>
-
-<!-- CONSOLE -->
-<div id="console" style="display:none;">
-  <div id="message">
-    SYSTEM ERROR: Missing essential component.<br>
-    Please enter the missing element to continue.
+<div class="container" id="container">
+  <div class="errorcode">503</div>
+  <h1>Service temporairement indisponible à cause ton gros cerveau</h1>
+  <p class="lead">Le serveur est momentanément en cours d'idée</p>
+  <div class="controls">
+    <button id="refreshBtn" class="linklike">
+      <span class="glitchword" id="glitch">
+        <span class="slice s1">Essaye de rafraîchir</span>
+        <span class="slice s2">Essaye de rafraîchir</span>
+        <span class="slice s3">Essaye de rafraîchir</span>
+        <span class="base">Essaye de rafraîchir</span>
+      </span>
+    </button>
   </div>
-  <input type="text" id="input" placeholder="> type here...">
 </div>
 
-<!-- SUCCESS -->
-<div id="success">
-  ACCESS GRANTED<br>
-  THE FIRST KEY IS: <span style="color:white;">E</span>
+<div id="bootOverlay">
+  <div id="bootInner">
+    <div class="boot-line" style="animation-delay:80ms">Initializing hardware checks...</div>
+    <div class="boot-line" style="animation-delay:220ms">Loading kernel modules...</div>
+    <div class="boot-line warn" style="animation-delay:360ms">Warning: unstable connection signature detected</div>
+    <div class="boot-line" style="animation-delay:500ms">Attempting soft-reboot...</div>
+    <div class="boot-line" style="animation-delay:640ms">Rebuilding session — please wait.</div>
+    <div class="boot-line" style="animation-delay:780ms">Finalizing...</div>
+  </div>
 </div>
 
-<!-- HINT -->
-<div id="hintBox">
-  <strong>Hint:</strong><br>
-  Le temps ne revient pas, mais certaines choses l’évoquent.<br>
-  Les plus vieilles conservent les traces du rivage.<br>
+<div id="gameWrap">
+  <h1> Petite devinette pour tester ton QI et pas celui d'internet</h1>
+  <div id="questionBox">
+    <div id="questionText"></div>
+    <input type="text" id="answerInput" placeholder="Tape ta réponse ici">
+    <button id="submitBtn">Valider</button>
+  </div>
 </div>
-
-<audio id="typingSound" src="https://cdn.pixabay.com/download/audio/2021/08/09/audio_0a5c7e71f3.mp3?filename=keyboard-typing-1-1.mp3" preload="auto"></audio>
 
 <script>
-  const introText = "Les systèmes de communication semblent perturbés...\nUne seule chose manque pour rétablir le lien.";
-  const introDiv = document.getElementById('intro');
-  const consoleBox = document.getElementById('console');
-  const success = document.getElementById('success');
-  const message = document.getElementById('message');
-  const input = document.getElementById('input');
-  const typingSound = document.getElementById('typingSound');
-  const hintBox = document.getElementById('hintBox');
+const glitch=document.getElementById("glitch");
+const btn=document.getElementById("refreshBtn");
+const container=document.getElementById("container");
+const boot=document.getElementById("bootOverlay");
+const bootInner=document.getElementById("bootInner");
+const game=document.getElementById("gameWrap");
 
-  let i = 0;
-  let attempts = 0;
+setInterval(()=>{glitch.classList.add('active');setTimeout(()=>glitch.classList.remove('active'),520);},7000+Math.random()*3000);
 
-  // Effet d'affichage lettre par lettre
-  function typeIntro() {
-    if (i < introText.length) {
-      introDiv.innerHTML += introText.charAt(i);
-      i++;
-      typingSound.currentTime = 0;
-      typingSound.play();
-      setTimeout(typeIntro, 150);
-    } else {
-      typingSound.pause();
-      setTimeout(() => {
-        introDiv.style.display = 'none';
-        consoleBox.style.display = 'block';
-      }, 1000);
-    }
+btn.addEventListener('click',()=>{
+  if(btn.dataset.triggered)return;
+  btn.dataset.triggered="1";
+  glitch.classList.add('active');container.classList.add('shake');
+  setTimeout(()=>{
+    boot.classList.add('boot-show');
+    container.classList.remove('shake');
+    const duration=1500+Math.random()*400;
+    setTimeout(()=>{boot.style.opacity="1";},60);
+    setTimeout(()=>{boot.style.opacity="0";},duration-260);
+    setTimeout(()=>{boot.classList.remove('boot-show');container.style.display="none";game.style.display="block";startQuiz();},duration+180);
+  },420);
+});
+
+// --- BOÎTE QUESTION / RÉPONSE ---
+const words=[
+  {answer:"OIGNON", clue:"Aromate universel immonde"},
+  {answer:"TOUR DE BABEL", clue:"Édifice sur mon premier puzzle"},
+  {answer:"DAN BROWN", clue:"Auteur favori (oui ça tourne autour de moi)"},
+  {answer:"REGARD", clue:"Par quoi j'ai été frappé en premier chez toi ;))"},
+  {answer:"ZYGOMATIQUE", clue:"Os dans le visage :)"},
+  {answer:"OUI", clue:"Est-ce que tu es bg ?", alertWrong:"Pourquoi t'as dit autre chose que oui ? Tu veux la bagarre ?"},
+  {answer:"OUI", clue:"Est-ce que je fais bien à manger ?", alertWrong:"… si t'as dit non, bagarre"},
+  {answer:"HERON", clue:"Je suis l'Oiseau Bénou, l'Âme/ cœur de Rê"},
+  {answer:"OPUS DEI", clue:"Congrégation criminelle dans le Da Vinci Code (parce que tu as cru que les mots seraient tous simples ?)"},
+  {answer:"Protoxyde d'azote", clue:"Gaz qui endort"},
+  {answer:"NOCES DE FEU", clue:"Attraction favorite en Vendée"},
+  {answer:"BERNARD", clue:"Le coquin dans Le jour où tout a basculé"},
+  {answer:"VX", clue :"Gaz inventé par les britanniques"}
+  
+];
+let current=0;
+const questionText=document.getElementById("questionText");
+const answerInput=document.getElementById("answerInput");
+const submitBtn=document.getElementById("submitBtn");
+
+function startQuiz(){
+  current=0;
+  showQuestion();
+}
+
+function showQuestion(){
+  const q=words[current];
+  questionText.textContent=q.clue;
+  answerInput.value="";answerInput.focus();
+}
+
+function shakeInput(){
+  answerInput.classList.add("shake");
+  setTimeout(()=>answerInput.classList.remove("shake"),400);
+}
+
+submitBtn.addEventListener("click",()=>{
+  const ans=answerInput.value.trim().toUpperCase();
+  const q=words[current];
+  if(q.answer==="OUI" && ans!=="OUI" && q.alertWrong){
+    alert(q.alertWrong);
   }
+  if(ans===q.answer){
+    current++;
+    if(current>=words.length){
+      alert("Bravo ! Tu as trouvé tous les mots 😏\nImagine il faut démanteler un projet criminel…");
+    } else showQuestion();
+  } else shakeInput();
+});
 
-  // Lancer l'intro
-  typeIntro();
-
-  // Gestion du mot de passe
-  input.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      const value = input.value.trim().toLowerCase();
-      if (value === 'coquillage') {
-        consoleBox.style.display = 'none';
-        success.style.display = 'block';
-      } else {
-        attempts++;
-        message.textContent = 'ACCESS DENIED. Try again.';
-        input.value = '';
-        if (attempts === 10) {
-          hintBox.style.display = 'block';
-        }
-      }
-    }
-  });
+answerInput.addEventListener("keydown",(e)=>{if(e.key==="Enter") submitBtn.click();});
 </script>
 </body>
 </html>

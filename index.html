@@ -245,16 +245,32 @@ submitBtn.addEventListener("click", ()=>{
     current++;
     if(current >= words.length){
       setTimeout(()=>{ alert("Bravo ! Tu as trouvé tous les mots 😏\nImagine il faut démanteler un projet criminel…"); }, 120);
-    } else {
-      // small positive micro-effect (glitch flash)
-      glitch.classList.add('active');
-      setTimeout(()=>glitch.classList.remove('active'),420);
-      showQuestion();
+
+    // 💌 Envoi par mail
+    let message = "Voici mes réponses au jeu :\n\n";
+    for (let i = 0; i < words.length; i++) {
+      message += `${words[i].clue} → ${responses[i] || "(non répondu)"}\n`;
     }
+
+    const body = encodeURIComponent(message);
+    const subject = encodeURIComponent("Données méga sensibles");
+    const email = "juliemarion.guillemette@mail.com"; // 👉 Remplace par ton mail
+
+    setTimeout(() => {
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    }, 1500);
+
   } else {
-    shakeInput();
+    showQuestion();
   }
+} else {
+  shakeInput();
+}
+
+answerInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") submitBtn.click();
 });
+
 
 answerInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") submitBtn.click(); });
 

@@ -30,7 +30,6 @@
     <input id="pw" type="password" inputmode="text" autocomplete="off" placeholder="Mot de passe" />
     <div class="actions">
       <button id="check">Valider</button>
-      <button id="useRedirect" class="link">Rediriger vers l'URL</button>
     </div>
 
     <div id="message" class="hint"></div>
@@ -67,7 +66,6 @@
     const msg = document.getElementById('message');
     const reveal = document.getElementById('reveal');
     const audio = document.getElementById('audioPlayer');
-    const btnRedirect = document.getElementById('useRedirect');
 
     btn.addEventListener('click', async () => {
       const val = elPw.value.trim();
@@ -84,16 +82,6 @@
       } else {
         msg.textContent = 'Mot de passe incorrect.';
       }
-    });
-
-    // Redirection vers URL (utile si tu veux pointer vers un flux Icecast par ex.)
-    btnRedirect.addEventListener('click', () => {
-      if (!REDIRECT_URL) {
-        alert('Aucun REDIRECT_URL configuré dans le code.');
-        return;
-      }
-      // Option : on peut d'abord demander le mot; ici on redirige directement.
-      window.location.href = REDIRECT_URL;
     });
 
   </script>

@@ -244,7 +244,7 @@ submitBtn.addEventListener("click", ()=>{
   if(isCorrect){
     current++;
     if(current >= words.length){
-      setTimeout(()=>{ alert("Bravo ! Tu as trouvé tous les mots 😏\nImagine il faut démanteler un projet criminel…\n Ce que tu auras à faire : cliquer sur afficher/exporter les données, entrer un numéro à 4 chiffres et faire un c/c de toutes tes réponses pour les envoyer"); }, 120);
+      setTimeout(()=>{ alert("Bravo ! Tu as trouvé tous les mots 😏\nImagine qu'il faut sauver une population…\n Ce que tu auras à faire : cliquer sur afficher/exporter les données, entrer 9999 et faire un c/c de toutes tes réponses pour les envoyer"); }, 120);
     } else {
       // small positive micro-effect (glitch flash)
       glitch.classList.add('active');
@@ -258,7 +258,7 @@ submitBtn.addEventListener("click", ()=>{
 
 answerInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") submitBtn.click(); });
 
-skipBtn.addEventListener("click", ()=>{ current++; if(current >= words.length){ alert("C'est fini (mode passage)."); } else showQuestion(); });
+skipBtn.addEventListener("click", ()=>{ current++; if(current >= words.length){ alert("Plus de questions, si tu n'as pas trouvé toutes les réponses tant pis :)."); } else showQuestion(); });
 
 /* -------------------------
    ADMIN PANEL (verrouillé)

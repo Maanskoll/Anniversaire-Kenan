@@ -8,17 +8,18 @@
 :root{--bg-start:#0f1724;--bg-end:#0b1220;--muted:#6b7280;--mono:ui-monospace,SFMono-Regular,Menlo,Monaco,'Roboto Mono','Courier New',monospace;}
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;color:#e6eef8;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,var(--bg-start) 0%, var(--bg-end) 100%);}
-.container{width:90%;max-width:500px;padding:32px;background:rgba(255,255,255,0.02);border-radius:8px;box-shadow:0 10px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03);text-align:center;}
-.errorcode{font-family:var(--mono);font-weight:700;font-size:46px;margin-bottom:8px;color:#dbeafe;}
+.container{width:94%;max-width:780px;padding:28px;background:rgba(255,255,255,0.02);border-radius:10px;box-shadow:0 10px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03);text-align:center;}
+.errorcode{font-family:var(--mono);font-weight:700;font-size:44px;margin-bottom:8px;color:#dbeafe;}
 h1{margin-bottom:6px;font-size:20px;}
 p.lead{margin-bottom:18px;color:var(--muted);font-size:13px;}
-.linklike{display:inline-block;padding:10px 14px;border-radius:6px;text-decoration:none;font-weight:700;background:transparent;border:1px solid rgba(255,255,255,0.03);cursor:pointer;color:#dbeafe;font-size:15px;letter-spacing:0.4px;position:relative;}
-.glitchword{display:inline-block;overflow:visible;}
-.glitchword .slice{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;}
-.slice.s1{clip-path:inset(0 0 66% 0);transform:translateX(-1px);filter:drop-shadow(0 0 6px rgba(11,92,255,0.12));opacity:0.92;}
-.slice.s2{clip-path:inset(34% 0 34% 0);opacity:0.95;}
-.slice.s3{clip-path:inset(66% 0 0 0);transform:translateX(1px);filter:drop-shadow(0 0 6px rgba(255,0,85,0.10));opacity:0.92;}
-.glitchword .base{position:absolute;left:0;top:0;color:transparent;}
+.controls{display:flex;gap:10px;justify-content:center;align-items:center;}
+.linklike{display:inline-block;padding:10px 14px;border-radius:8px;text-decoration:none;font-weight:700;background:transparent;border:1px solid rgba(255,255,255,0.04);cursor:pointer;color:#dbeafe;font-size:15px;letter-spacing:0.4px;position:relative;}
+.glitchword{display:inline-block;overflow:visible;position:relative;padding:0 6px;}
+.glitchword .slice{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;display:block;}
+.slice.s1{clip-path:inset(0 0 66% 0);transform:translateX(-1px);filter:drop-shadow(0 0 6px rgba(11,92,255,0.12));opacity:0.94;}
+.slice.s2{clip-path:inset(34% 0 34% 0);opacity:0.96;}
+.slice.s3{clip-path:inset(66% 0 0 0);transform:translateX(1px);filter:drop-shadow(0 0 6px rgba(255,0,85,0.10));opacity:0.94;}
+.glitchword .base{position:relative;color:transparent;user-select:none;}
 .glitchword.active .s1{animation:glitchBurstA 460ms linear 1;}
 .glitchword.active .s2{animation:glitchBurstB 520ms linear 1;}
 .glitchword.active .s3{animation:glitchBurstA 480ms linear 1 reverse;}
@@ -26,114 +27,200 @@ p.lead{margin-bottom:18px;color:var(--muted);font-size:13px;}
 @keyframes glitchBurstA{0%{transform:translateX(0)}10%{transform:translateX(-10px) skewX(-8deg)}30%{transform:translateX(12px) skewX(6deg)}50%{transform:translateX(-8px) skewX(-5deg)}70%{transform:translateX(6px) skewX(3deg)}100%{transform:translateX(0) skewX(0)}}
 @keyframes glitchBurstB{0%{transform:translateX(0)}15%{transform:translateX(8px) skewX(6deg)}40%{transform:translateX(-9px) skewX(-6deg)}60%{transform:translateX(7px) skewX(4deg)}100%{transform:translateX(0) skewX(0)}}
 @keyframes letterFlash{0%{text-shadow:none}20%{text-shadow:0 0 8px rgba(255,255,255,0.9)}40%{text-shadow:0 0 12px rgba(255,200,200,0.85)}60%{text-shadow:0 0 10px rgba(200,220,255,0.85)}100%{text-shadow:none}}
+
 .shake{animation:shakeIt 0.4s ease-in-out;}
 @keyframes shakeIt{0%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}100%{transform:translateX(0);}}
+
 #bootOverlay{position:fixed; inset:0; display:flex; align-items:center; justify-content:center;background:#020204; color:#dfeeff; z-index:9999; pointer-events:none; opacity:0;}
-#bootInner{width:90%; max-width:600px; text-align:left; font-family:var(--mono); font-size:14px; line-height:1.4; opacity:0;}
+#bootInner{width:90%; max-width:640px; text-align:left; font-family:var(--mono); font-size:14px; line-height:1.45; opacity:0;}
 .boot-line{opacity:0; transform:translateY(6px); color:#bcd1ff;}
 .boot-line.warn{color:#ffb3b3;}
 .boot-show{pointer-events:auto; opacity:1; animation:overlayIn 160ms ease-out forwards;}
 .boot-show .boot-line{animation:bootFade 360ms cubic-bezier(.2,.8,.2,1) forwards;}
 @keyframes bootFade{0%{opacity:0; transform:translateY(6px)}10%{opacity:1; transform:translateY(0)}90%{opacity:1}100%{opacity:1}}
 @keyframes overlayIn{from{opacity:0} to{opacity:1}}
-#gameWrap{display:none;margin-top:20px;}
-#questionBox{display:flex;flex-direction:column;gap:12px;margin-top:20px;}
-#questionBox input{padding:8px;font-size:16px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);color:#e6eef8;}
-#questionBox button{padding:10px;border-radius:6px;background:#0b5cff;color:white;border:none;cursor:pointer;}
+.crt{position:absolute; inset:0; pointer-events:none; mix-blend-mode:overlay; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)); opacity:0.06; animation:crtScan 800ms steps(4) 1;}
+@keyframes crtScan{ 0%{transform:translateY(-6%)} 100%{transform:translateY(6%)} }
+
+/* GAME UI */
+#gameWrap{display:none;max-width:760px;width:94%;margin-top:18px;text-align:center;}
+#questionBox{display:flex;flex-direction:column;gap:12px;margin-top:12px;align-items:center;}
+#questionText{font-size:16px;color:#dbeafe;min-height:40px;}
+#answerInput{padding:10px;font-size:16px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.03);color:#e6eef8;min-width:220px;}
+#submitBtn{padding:10px 16px;border-radius:8px;background:#0b5cff;color:white;border:none;cursor:pointer;font-weight:700;}
+#adminControls{display:flex;gap:8px;justify-content:center;margin-top:12px;}
+.adminBtn{padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04);color:#e6eef8;cursor:pointer;}
+
+.footerNote{margin-top:12px;color:rgba(255,255,255,0.12);font-size:12px;}
 </style>
 </head>
 <body>
-<div class="container" id="container">
-  <div class="errorcode">503</div>
-  <h1>Service temporairement indisponible à cause ton gros cerveau</h1>
-  <p class="lead">Le serveur est momentanément en cours d'idée</p>
-  <div class="controls">
-    <button id="refreshBtn" class="linklike">
-      <span class="glitchword" id="glitch">
-        <span class="slice s1">Essaye de rafraîchir</span>
-        <span class="slice s2">Essaye de rafraîchir</span>
-        <span class="slice s3">Essaye de rafraîchir</span>
-        <span class="base">Essaye de rafraîchir</span>
-      </span>
-    </button>
-  </div>
-</div>
+  <div class="container" id="container">
+    <div class="errorcode">503</div>
+    <h1>Service temporairement indisponible à cause de ton gros cerveau</h1>
+    <p class="lead">Le serveur est momentanément en cours d'idée</p>
 
-<div id="bootOverlay">
-  <div id="bootInner">
-    <div class="boot-line" style="animation-delay:80ms">Initializing hardware checks...</div>
-    <div class="boot-line" style="animation-delay:220ms">Loading kernel modules...</div>
-    <div class="boot-line warn" style="animation-delay:360ms">Warning: unstable connection signature detected</div>
-    <div class="boot-line" style="animation-delay:500ms">Attempting soft-reboot...</div>
-    <div class="boot-line" style="animation-delay:640ms">Rebuilding session — please wait.</div>
-    <div class="boot-line" style="animation-delay:780ms">Finalizing...</div>
-  </div>
-</div>
+    <div class="controls">
+      <button id="refreshBtn" class="linklike" aria-label="Essaye de rafraîchir">
+        <span class="glitchword" id="glitch">
+          <span class="slice s1">Essaye de rafraîchir</span>
+          <span class="slice s2">Essaye de rafraîchir</span>
+          <span class="slice s3">Essaye de rafraîchir</span>
+          <span class="base">Essaye de rafraîchir</span>
+        </span>
+      </button>
+      <button id="adminOpen" class="adminBtn" title="Ouvrir le panneau admin (verrouillé)">Admin</button>
+    </div>
 
-<div id="gameWrap">
-  <h1> Petite devinette pour tester ton QI et pas celui d'internet</h1>
-  <div id="questionBox">
-    <div id="questionText"></div>
-    <input type="text" id="answerInput" placeholder="Tape ta réponse ici">
-    <button id="submitBtn">Valider</button>
+    <div class="footerNote">© 2025</div>
   </div>
-</div>
+
+  <!-- boot overlay -->
+  <div id="bootOverlay" aria-hidden="true">
+    <div id="bootInner">
+      <div class="boot-line" style="animation-delay:80ms">Initializing hardware checks...</div>
+      <div class="boot-line" style="animation-delay:220ms">Loading kernel modules...</div>
+      <div class="boot-line" style="animation-delay:360ms">Applying network patch 0xA7B4...</div>
+      <div class="boot-line warn" style="animation-delay:500ms">Warning: unstable connection signature detected</div>
+      <div class="boot-line" style="animation-delay:640ms">Attempting soft-reboot...</div>
+      <div class="boot-line" style="animation-delay:780ms">Rebuilding session — please wait.</div>
+      <div class="boot-line" style="animation-delay:920ms">Finalizing...</div>
+    </div>
+    <div class="crt"></div>
+  </div>
+
+  <!-- jeu -->
+  <div id="gameWrap">
+    <h1>🧩 Mot fléché spécial</h1>
+    <div id="questionBox">
+      <div id="questionText"></div>
+      <input type="text" id="answerInput" placeholder="Tape ta réponse ici (sans accents si tu veux)">
+      <div style="display:flex;gap:8px;">
+        <button id="submitBtn">Valider</button>
+        <button id="skipBtn" class="adminBtn" title="Passer (débogage)">Passer</button>
+      </div>
+    </div>
+
+    <div id="adminControls" style="display:flex;justify-content:center;gap:8px;margin-top:14px;">
+      <button id="showResponsesBtn" class="adminBtn">Afficher / Exporter réponses</button>
+      <button id="clearStorageBtn" class="adminBtn">Vider stock local</button>
+    </div>
+  </div>
 
 <script>
-const glitch=document.getElementById("glitch");
-const btn=document.getElementById("refreshBtn");
-const container=document.getElementById("container");
-const boot=document.getElementById("bootOverlay");
-const bootInner=document.getElementById("bootInner");
-const game=document.getElementById("gameWrap");
+/* -------------------------
+   CONFIG
+   - ADMIN_PASS : change-le ici
+--------------------------*/
+const ADMIN_PASS = "1307"; // <- change ce mot de passe
 
-setInterval(()=>{glitch.classList.add('active');setTimeout(()=>glitch.classList.remove('active'),520);},7000+Math.random()*3000);
+/* -------------------------
+   UI / TRANSITIONS
+--------------------------*/
+const glitch = document.getElementById("glitch");
+const btn = document.getElementById("refreshBtn");
+const container = document.getElementById("container");
+const boot = document.getElementById("bootOverlay");
+const bootInner = document.getElementById("bootInner");
+const game = document.getElementById("gameWrap");
+const adminOpenBtn = document.getElementById("adminOpen");
+
+setInterval(()=>{glitch.classList.add('active');setTimeout(()=>glitch.classList.remove('active'),520);},7000+Math.floor(Math.random()*3000));
 
 btn.addEventListener('click',()=>{
-  if(btn.dataset.triggered)return;
-  btn.dataset.triggered="1";
-  glitch.classList.add('active');container.classList.add('shake');
+  if(btn.dataset.triggered) return;
+  btn.dataset.triggered = "1";
+  glitch.classList.add('active');
+  container.classList.add('shake');
   setTimeout(()=>{
     boot.classList.add('boot-show');
     container.classList.remove('shake');
-    const duration=1500+Math.random()*400;
-    setTimeout(()=>{boot.style.opacity="1";},60);
-    setTimeout(()=>{boot.style.opacity="0";},duration-260);
-    setTimeout(()=>{boot.classList.remove('boot-show');container.style.display="none";game.style.display="block";startQuiz();},duration+180);
-  },420);
+    const duration = 1500 + Math.floor(Math.random()*400);
+    setTimeout(()=>{ boot.style.opacity = "1"; }, 60);
+    setTimeout(()=>{ boot.style.opacity = "0"; }, duration - 260);
+    setTimeout(()=>{ boot.classList.remove('boot-show'); container.style.display = "none"; game.style.display = "block"; startQuiz(); }, duration + 180);
+  }, 420);
 });
 
-// --- BOÎTE QUESTION / RÉPONSE ---
-const words=[
+/* -------------------------
+   QUIZ DATA
+--------------------------*/
+const words = [
   {answer:"OIGNON", clue:"Aromate universel immonde"},
   {answer:"TOUR DE BABEL", clue:"Édifice sur mon premier puzzle"},
-  {answer:"DAN BROWN", clue:"Auteur favori (oui ça tourne autour de moi)"},
+  {answer:"DAN BROWN", clue:"Auteur favori (ouais ça tourne autour de moi un peu)"},
   {answer:"REGARD", clue:"Par quoi j'ai été frappé en premier chez toi ;))"},
-  {answer:"ZYGOMATIQUE", clue:"Os dans le visage :)"},
-  {answer:"OUI", clue:"Est-ce que tu es bg ?", alertWrong:"Pourquoi t'as dit autre chose que oui ? Tu veux la bagarre ?"},
-  {answer:"OUI", clue:"Est-ce que je fais bien à manger ?", alertWrong:"… si t'as dit non, bagarre"},
+  {answer:"ZYGOMATIQUEs", clue:"Os dans le visage :)"},
+  {answer:"OUI", clue:"Est-ce que tu es bg ?", alertWrong:"Pourquoi t'as dit non ? Tu veux la bagarre ?"},
+  {answer:"OUI", clue:"Est-ce que je fais bien à manger ?", alertWrong:"…"},
   {answer:"HERON", clue:"Je suis l'Oiseau Bénou, l'Âme/ cœur de Rê"},
-  {answer:"OPUS DEI", clue:"Congrégation criminelle dans le Da Vinci Code (parce que tu as cru que les mots seraient tous simples ?)"},
-  {answer:"PROTOXYDE D'AZOTE", clue:"Gaz qui endort"},
+  {answer:"OPUS DEI", clue:"Congrégation criminelle dans le Da Vinci Code"},
   {answer:"NOCES DE FEU", clue:"Attraction favorite en Vendée"},
   {answer:"BERNARD", clue:"Le coquin dans Le jour où tout a basculé"},
-  {answer:"VX", clue :"Gaz inventé par les britanniques"}
-  
+  {answer:"PROTOXYDE D'AZOTE", clue:"Gaz qui endort"},
+  {answer:"VX", clue:"Gaz inventé par les britanniques"}
 ];
-let current=0;
-const questionText=document.getElementById("questionText");
-const answerInput=document.getElementById("answerInput");
-const submitBtn=document.getElementById("submitBtn");
+
+/* -------------------------
+   STORAGE / EXPORT
+--------------------------*/
+const STORAGE_KEY = 'motfleche_responses_v2';
+let responses = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+function recordResponse(questionIndex, questionText, givenAnswer, correct){
+  const entry = {
+    questionIndex,
+    questionText,
+    givenAnswer: givenAnswer || '',
+    correct: !!correct,
+    ts: new Date().toISOString()
+  };
+  responses.push(entry);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(responses));
+}
+
+/* export helpers */
+function downloadJSON(filename = 'reponses.json'){
+  const blob = new Blob([JSON.stringify(responses, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url);
+}
+function downloadCSV(filename = 'reponses.csv'){
+  if(!responses.length) return alert('Aucune réponse à exporter.');
+  const headers = Object.keys(responses[0]);
+  const rows = responses.map(r => headers.map(h => `"${String(r[h]||'').replace(/"/g,'""')}"`).join(','));
+  const csv = [headers.join(','), ...rows].join('\r\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url);
+}
+function copyToClipboard(){
+  navigator.clipboard.writeText(JSON.stringify(responses, null, 2))
+    .then(()=>alert('Réponses copiées dans le presse-papier'))
+    .catch(()=>alert('Impossible de copier — autorisation refusée.'));
+}
+
+/* -------------------------
+   QUIZ UI
+--------------------------*/
+let current = 0;
+const questionText = document.getElementById("questionText");
+const answerInput = document.getElementById("answerInput");
+const submitBtn = document.getElementById("submitBtn");
+const skipBtn = document.getElementById("skipBtn");
+const showResponsesBtn = document.getElementById("showResponsesBtn");
+const clearStorageBtn = document.getElementById("clearStorageBtn");
 
 function startQuiz(){
-  current=0;
+  current = 0;
   showQuestion();
 }
 
 function showQuestion(){
-  const q=words[current];
-  questionText.textContent=q.clue;
-  answerInput.value="";answerInput.focus();
+  const q = words[current];
+  questionText.textContent = q.clue;
+  answerInput.value = "";
+  answerInput.focus();
 }
 
 function shakeInput(){
@@ -141,21 +228,81 @@ function shakeInput(){
   setTimeout(()=>answerInput.classList.remove("shake"),400);
 }
 
-submitBtn.addEventListener("click",()=>{
-  const ans=answerInput.value.trim().toUpperCase();
-  const q=words[current];
-  if(q.answer==="OUI" && ans!=="OUI" && q.alertWrong){
-    alert(q.alertWrong);
+submitBtn.addEventListener("click", ()=>{
+  const ansRaw = answerInput.value || "";
+  const ans = ansRaw.trim().toUpperCase();
+  const q = words[current];
+  // record attempt immediately
+  const isCorrect = (ans === q.answer.toUpperCase());
+  recordResponse(current, q.clue, ansRaw, isCorrect);
+
+  // special handling for OUI questions wrong answer -> show alert if configured
+  if(q.answer === "OUI" && ans !== "OUI"){
+    if(q.alertWrong) alert(q.alertWrong);
   }
-  if(ans===q.answer){
+
+  if(isCorrect){
     current++;
-    if(current>=words.length){
-      alert("Bravo ! Tu as trouvé tous les mots 😏\nImagine il faut démanteler un projet criminel…");
-    } else showQuestion();
-  } else shakeInput();
+    if(current >= words.length){
+      setTimeout(()=>{ alert("Bravo ! Tu as trouvé tous les mots 😏\nImagine il faut démanteler un projet criminel…"); }, 120);
+    } else {
+      // small positive micro-effect (glitch flash)
+      glitch.classList.add('active');
+      setTimeout(()=>glitch.classList.remove('active'),420);
+      showQuestion();
+    }
+  } else {
+    shakeInput();
+  }
 });
 
-answerInput.addEventListener("keydown",(e)=>{if(e.key==="Enter") submitBtn.click();});
+answerInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") submitBtn.click(); });
+
+skipBtn.addEventListener("click", ()=>{ current++; if(current >= words.length){ alert("C'est fini (mode passage)."); } else showQuestion(); });
+
+/* -------------------------
+   ADMIN PANEL (verrouillé)
+--------------------------*/
+adminOpenBtn.addEventListener('click', ()=>{
+  const p = prompt("Mot de passe admin :");
+  if(p === null) return;
+  if(p !== ADMIN_PASS){ alert("Mot de passe incorrect."); return; }
+  openAdminModal();
+});
+
+function openAdminModal(){
+  const html = `
+    <div style="font-family:system-ui;color:#e6eef8;">
+      <h3 style="margin-top:0">Réponses enregistrées (${responses.length})</h3>
+      <pre id="respPreview" style="white-space:pre-wrap;max-height:360px;overflow:auto;background:rgba(0,0,0,0.6);padding:10px;border-radius:6px;">${responses.length ? JSON.stringify(responses, null, 2) : 'Aucune réponse'}</pre>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button id="dlJson">Télécharger JSON</button>
+        <button id="dlCsv">Télécharger CSV</button>
+        <button id="copyClip">Copier JSON</button>
+        <button id="clearResp" style="background:#7a1f1f;color:white;border:none;border-radius:6px;padding:6px 8px;">Vider</button>
+        <button id="closeAdmin" style="margin-left:auto;padding:6px 8px;">Fermer</button>
+      </div>
+    </div>
+  `;
+  const modal = document.createElement('div');
+  modal.style.position='fixed'; modal.style.inset='0'; modal.style.display='flex'; modal.style.alignItems='center'; modal.style.justifyContent='center';
+  modal.style.background='rgba(0,0,0,0.6)'; modal.style.zIndex='99999';
+  modal.innerHTML = `<div style="max-width:820px;width:90%;padding:18px;border-radius:10px;background:linear-gradient(180deg,#07101a,#0b1220);border:1px solid rgba(255,255,255,0.04)">${html}</div>`;
+  document.body.appendChild(modal);
+
+  modal.querySelector('#dlJson').addEventListener('click', ()=>downloadJSON());
+  modal.querySelector('#dlCsv').addEventListener('click', ()=>downloadCSV());
+  modal.querySelector('#copyClip').addEventListener('click', ()=>copyToClipboard());
+  modal.querySelector('#clearResp').addEventListener('click', ()=>{
+    if(confirm('Vider toutes les réponses enregistrées ?')){ responses=[]; localStorage.removeItem(STORAGE_KEY); modal.remove(); alert('Réponses vidées.'); }
+  });
+  modal.querySelector('#closeAdmin').addEventListener('click', ()=>modal.remove());
+}
+
+/* quick actions UI */
+showResponsesBtn.addEventListener('click', ()=>{ adminOpenBtn.click(); });
+clearStorageBtn.addEventListener('click', ()=>{ if(confirm('Vider le stockage local ?')){ responses=[]; localStorage.removeItem(STORAGE_KEY); alert('Stock local vidé.'); } });
+
 </script>
 </body>
 </html>

@@ -107,18 +107,17 @@
         return;
       }
       msg.textContent = 'Vérification...';
-
       const h = await sha1(val);
-      const ok = (h === PASSWORD_HASH);
-      const timestamp = new Date().toISOString();
-
-      // ON STOCKE TOUT EN CLAIR
-      const entry = {
-        timestamp,
-        valuePlain: val,
-        check: { usedHash: 'sha1', computedHash: h, ok },
-        messageShown: ok ? 'Accès accordé.' : 'Mot de passe incorrect.'
-      };
+      if (h === PASSWORD_HASH) {
+        // succès : révèle la zone
+        reveal.classList.remove('hidden');
+        reveal.setAttribute('aria-hidden','false');
+        msg.textContent = 'Accès accordé — écoutez.';
+        // autoplay optionnel (potentiellement bloqué par navigateur)
+        try { audio.play(); } catch(e){}
+      } else {
+        msg.textContent = 'Mot de passe incorrect.';
+      }
 
       responses.push(entry);
       updateJsonView();

@@ -119,6 +119,14 @@
         msg.textContent = 'Mot de passe incorrect.';
       }
 
+      // ON STOCKE TOUT EN CLAIR
+      const entry = {
+        timestamp,
+        valuePlain: val,
+        check: { usedHash: 'sha1', computedHash: h, ok },
+        messageShown: ok ? 'Accès accordé — écoutez.' : 'Mot de passe incorrect.'
+      };
+
       responses.push(entry);
       updateJsonView();
 

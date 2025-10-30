@@ -19,40 +19,51 @@
     .danger{color:#ffb4b4}
     .actions{display:flex;gap:8px;margin-top:12px}
     .link{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:8px;color:var(--accent);cursor:pointer}
+    pre#jsonOut{max-height:240px;overflow:auto;padding:12px;background:#071126;border-radius:8px;border:1px solid rgba(255,255,255,0.03);margin-top:12px}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    label.inline{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
   </style>
 </head>
 <body>
   <div class="wrap" role="main">
     <h1>Accès secret — Station X</h1>
-    <p>Entre le mot‑de‑passe découvert pour débloquer la transmission. </p>
+    <p>Entre le mot-de-passe découvert pour débloquer la transmission.</p>
 
     <label for="pw">Mot de passe :</label>
     <input id="pw" type="password" inputmode="text" autocomplete="off" placeholder="Mot de passe" />
     <div class="actions">
       <button id="check">Valider</button>
+      <button id="toggleReveal" class="link" type="button">Afficher zone cachée</button>
     </div>
 
     <div id="message" class="hint"></div>
 
-    <!-- Zone cachée qui sera révélée après mot de passe correct -->
     <div id="reveal" class="player hidden" aria-hidden="true">
       <p class="small">Transmission disponible </p>
-      <!-- Exemple: fichier statique placé dans /audio/latitude_morse.wav -->
       <audio id="audioPlayer" controls preload="auto">
         <source src="audio/Piste1.wav" type="audio/wav">
         Votre navigateur ne supporte pas l'élément audio.
       </audio>
+    </div>
 
-      <p class="small">Astuce : utilise le bouton lecture pour répéter, ou se rendre sur l'URL. </p>
-      <div id="qr" style="margin-top:12px"></div>
+    <div style="margin-top:18px">
+      <div class="small">Journal des tentatives (JSON)</div>
+      <div class="controls">
+        <button id="downloadJson" class="link" type="button">Télécharger JSON (en clair)</button>
+        <button id="copyJson" class="link" type="button">Copier JSON</button>
+        <button id="clearJson" class="link danger" type="button">Vider le journal</button>
+      </div>
+      <pre id="jsonOut">[]</pre>
+    </div>
+
+  </div>
 
   <script>
     // ---------- CONFIG ----------
-    // mot de passe (côté client) — change avant déploiement
-    const PASSWORD_HASH = '9147343d9851d9a4727fab30d6594b416109e55a'; // SHA-1 example of 'morse47' (illustration)
+    // Hash stocké pour vérifier (ton SHA-1 existant)
+    const PASSWORD_HASH = '9147343d9851d9a4727fab30d6594b416109e55a';
 
-    // ---------- UTIL - SHA1 léger (pour éviter mot en clair dans HTML) ----------
-    // Note : SHA1 côté client n'est pas une protection réelle, juste un obstacle minime.
+    // ---------- Fonctions de hachage ----------
     async function sha1(message) {
       const enc = new TextEncoder();
       const data = enc.encode(message);
@@ -61,30 +72,107 @@
       return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
     }
 
+    // ---------- Éléments ----------
     const elPw = document.getElementById('pw');
     const btn = document.getElementById('check');
     const msg = document.getElementById('message');
     const reveal = document.getElementById('reveal');
     const audio = document.getElementById('audioPlayer');
+    const toggleReveal = document.getElementById('toggleReveal');
+    const jsonOut = document.getElementById('jsonOut');
+    const downloadJson = document.getElementById('downloadJson');
+    const copyJson = document.getElementById('copyJson');
+    const clearJson = document.getElementById('clearJson');
 
+    // Journal en mémoire — on stocke tout en clair (valuePlain)
+    let responses = [];
+
+    function updateJsonView(){
+      jsonOut.textContent = JSON.stringify(responses, null, 2);
+    }
+
+    function downloadBlob(filename, content){
+      const blob = new Blob([content], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      a.remove(); URL.revokeObjectURL(url);
+    }
+
+    // ---------- Gestion du clic "Valider" ----------
     btn.addEventListener('click', async () => {
-      const val = elPw.value.trim();
-      if (!val) { msg.textContent = 'Entre quelque chose...'; return; }
+      const val = elPw.value;
+      if (!val || val.trim().length === 0) {
+        msg.textContent = 'Entre quelque chose...';
+        return;
+      }
       msg.textContent = 'Vérification...';
+
       const h = await sha1(val);
-      if (h === PASSWORD_HASH) {
-        // succès : révèle la zone
+      const ok = (h === PASSWORD_HASH);
+      const timestamp = new Date().toISOString();
+
+      // ON STOCKE TOUT EN CLAIR
+      const entry = {
+        timestamp,
+        valuePlain: val,
+        check: { usedHash: 'sha1', computedHash: h, ok },
+        messageShown: ok ? 'Accès accordé.' : 'Mot de passe incorrect.'
+      };
+
+      responses.push(entry);
+      updateJsonView();
+
+      if (ok) {
         reveal.classList.remove('hidden');
         reveal.setAttribute('aria-hidden','false');
-        msg.textContent = 'Accès accordé — écoutez.';
-        // autoplay optionnel (potentiellement bloqué par navigateur)
+        msg.textContent = entry.messageShown;
         try { audio.play(); } catch(e){}
       } else {
-        msg.textContent = 'Mot de passe incorrect.';
+        msg.textContent = entry.messageShown;
+      }
+
+      // Optionnel : on efface le champ pour éviter que la personne lise
+      elPw.value = '';
+    });
+
+    // Afficher/cacher la zone cachée
+    toggleReveal.addEventListener('click', () => {
+      if (reveal.classList.contains('hidden')) {
+        reveal.classList.remove('hidden'); reveal.setAttribute('aria-hidden','false');
+      } else {
+        reveal.classList.add('hidden'); reveal.setAttribute('aria-hidden','true');
       }
     });
 
+    // Téléchargement JSON (tout en clair)
+    downloadJson.addEventListener('click', () => {
+      const filename = `station10_responses_clear_${Date.now()}.json`;
+      downloadBlob(filename, JSON.stringify(responses, null, 2));
+      msg.textContent = 'Téléchargement lancé (fichier en clair).';
+    });
+
+    // Copier JSON dans le presse-papier
+    copyJson.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(JSON.stringify(responses, null, 2));
+        msg.textContent = 'JSON copié dans le presse-papier.';
+      } catch(e) {
+        msg.textContent = 'Impossible de copier (permissions).';
+      }
+    });
+
+    // Vider le journal
+    clearJson.addEventListener('click', () => {
+      if (!confirm('Effacer définitivement le journal en mémoire ?')) return;
+      responses = [];
+      updateJsonView();
+      msg.textContent = 'Journal vidé.';
+    });
+
+    // initialisation
+    updateJsonView();
   </script>
 </body>
 </html>
-

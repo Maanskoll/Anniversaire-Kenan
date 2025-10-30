@@ -119,6 +119,10 @@
         msg.textContent = 'Mot de passe incorrect.';
       }
 
+      const h = await sha1(val);
+      const ok = (h === PASSWORD_HASH);
+      const timestamp = new Date().toIOString();
+
       // ON STOCKE TOUT EN CLAIR
       const entry = {
         timestamp,

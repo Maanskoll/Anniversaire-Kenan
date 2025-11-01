@@ -86,10 +86,12 @@
     const clearJson = document.getElementById('clearJson');
 
     // Journal en mémoire — on stocke tout en clair (valuePlain)
-    let responses = [];
+    let responses = JSON.parse(localStorage.getItem('station10_responses') || '[]');
+updateJsonView();
 
     function updateJsonView(){
       jsonOut.textContent = JSON.stringify(responses, null, 2);
+      localStorage.setItem('station10_responses', JSON.stringify(responses));
     }
 
     function downloadBlob(filename, content){

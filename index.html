@@ -60,122 +60,112 @@
   </div>
 
   <script>
-    // ---------- CONFIG ----------
-    // Hash stocké pour vérifier (ton SHA-1 existant)
-    const PASSWORD_HASH = '9147343d9851d9a4727fab30d6594b416109e55a';
+  // ---------- CONFIG ----------
+  const PASSWORD_HASH = '9147343d9851d9a4727fab30d6594b416109e55a';
 
-    // ---------- Fonctions de hachage ----------
-    async function sha1(message) {
-      const enc = new TextEncoder();
-      const data = enc.encode(message);
-      const hashBuffer = await crypto.subtle.digest('SHA-1', data);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+  // ---------- Fonctions de hachage ----------
+  async function sha1(message) {
+    const enc = new TextEncoder();
+    const data = enc.encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  // ---------- Éléments ----------
+  const elPw = document.getElementById('pw');
+  const btn = document.getElementById('check');
+  const msg = document.getElementById('message');
+  const reveal = document.getElementById('reveal');
+  const audio = document.getElementById('audioPlayer');
+  const jsonOut = document.getElementById('jsonOut');
+  const downloadJson = document.getElementById('downloadJson');
+  const copyJson = document.getElementById('copyJson');
+  const clearJson = document.getElementById('clearJson');
+
+  // ---------- Fonctions ----------
+  function updateJsonView(){
+    jsonOut.textContent = JSON.stringify(responses, null, 2);
+    localStorage.setItem('station10_responses', JSON.stringify(responses));
+  }
+
+  function downloadBlob(filename, content){
+    const blob = new Blob([content], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // ---------- Données ----------
+  let responses = JSON.parse(localStorage.getItem('station10_responses') || '[]');
+  updateJsonView();
+
+  // ---------- Gestion du clic "Valider" ----------
+  btn.addEventListener('click', async () => {
+    const val = elPw.value;
+    if (!val || val.trim().length === 0) {
+      msg.textContent = 'Entre quelque chose...';
+      return;
     }
+    msg.textContent = 'Vérification...';
 
-    // ---------- Éléments ----------
-    const elPw = document.getElementById('pw');
-    const btn = document.getElementById('check');
-    const msg = document.getElementById('message');
-    const reveal = document.getElementById('reveal');
-    const audio = document.getElementById('audioPlayer');
-    const toggleReveal = document.getElementById('toggleReveal');
-    const jsonOut = document.getElementById('jsonOut');
-    const downloadJson = document.getElementById('downloadJson');
-    const copyJson = document.getElementById('copyJson');
-    const clearJson = document.getElementById('clearJson');
+    const h = await sha1(val);
+    const ok = (h === PASSWORD_HASH);
+    const timestamp = new Date().toISOString();
 
-    // Journal en mémoire — on stocke tout en clair (valuePlain)
-    let responses = JSON.parse(localStorage.getItem('station10_responses') || '[]');
-updateJsonView();
+    const entry = {
+      timestamp,
+      valuePlain: val,
+      check: { usedHash: 'sha1', computedHash: h, ok },
+      messageShown: ok ? 'Accès accordé.' : 'Mot de passe incorrect.'
+    };
 
-    function updateJsonView(){
-      jsonOut.textContent = JSON.stringify(responses, null, 2);
-      localStorage.setItem('station10_responses', JSON.stringify(responses));
-    }
-
-    function downloadBlob(filename, content){
-      const blob = new Blob([content], {type: 'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = filename;
-      document.body.appendChild(a); a.click();
-      a.remove(); URL.revokeObjectURL(url);
-    }
-
-    // ---------- Gestion du clic "Valider" ----------
-    btn.addEventListener('click', async () => {
-      const val = elPw.value;
-      if (!val || val.trim().length === 0) {
-        msg.textContent = 'Entre quelque chose...';
-        return;
-      }
-      msg.textContent = 'Vérification...';
-
-      const h = await sha1(val);
-      const ok = (h === PASSWORD_HASH);
-      const timestamp = new Date().toISOString();
-
-      // ON STOCKE TOUT EN CLAIR
-      const entry = {
-        timestamp,
-        valuePlain: val,
-        check: { usedHash: 'sha1', computedHash: h, ok },
-        messageShown: ok ? 'Accès accordé.' : 'Mot de passe incorrect.'
-      };
-
-      responses.push(entry);
-      updateJsonView();
-
-      if (ok) {
-        reveal.classList.remove('hidden');
-        reveal.setAttribute('aria-hidden','false');
-        msg.textContent = entry.messageShown;
-        try { audio.play(); } catch(e){}
-      } else {
-        msg.textContent = entry.messageShown;
-      }
-
-      // Optionnel : on efface le champ pour éviter que la personne lise
-      elPw.value = '';
-    });
-
-    // Afficher/cacher la zone cachée
-    toggleReveal.addEventListener('click', () => {
-      if (reveal.classList.contains('hidden')) {
-        reveal.classList.remove('hidden'); reveal.setAttribute('aria-hidden','false');
-      } else {
-        reveal.classList.add('hidden'); reveal.setAttribute('aria-hidden','true');
-      }
-    });
-
-    // Téléchargement JSON (tout en clair)
-    downloadJson.addEventListener('click', () => {
-      const filename = `station10_responses_clear_${Date.now()}.json`;
-      downloadBlob(filename, JSON.stringify(responses, null, 2));
-      msg.textContent = 'Téléchargement lancé (fichier en clair).';
-    });
-
-    // Copier JSON dans le presse-papier
-    copyJson.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(JSON.stringify(responses, null, 2));
-        msg.textContent = 'JSON copié dans le presse-papier.';
-      } catch(e) {
-        msg.textContent = 'Impossible de copier (permissions).';
-      }
-    });
-
-    // Vider le journal
-    clearJson.addEventListener('click', () => {
-      if (!confirm('Effacer définitivement le journal en mémoire ?')) return;
-      responses = [];
-      updateJsonView();
-      msg.textContent = 'Journal vidé.';
-    });
-
-    // initialisation
+    responses.push(entry);
     updateJsonView();
-  </script>
+
+    if (ok) {
+      reveal.classList.remove('hidden');
+      reveal.setAttribute('aria-hidden','false');
+      msg.textContent = entry.messageShown;
+      try { audio.play(); } catch(e){}
+    } else {
+      msg.textContent = entry.messageShown;
+    }
+
+    elPw.value = '';
+  });
+
+  // ---------- Téléchargement JSON ----------
+  downloadJson.addEventListener('click', () => {
+    const filename = `station10_responses_clear_${Date.now()}.json`;
+    downloadBlob(filename, JSON.stringify(responses, null, 2));
+    msg.textContent = 'Téléchargement lancé (fichier en clair).';
+  });
+
+  // ---------- Copier JSON ----------
+  copyJson.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(responses, null, 2));
+      msg.textContent = 'JSON copié dans le presse-papier.';
+    } catch(e) {
+      msg.textContent = 'Impossible de copier (permissions).';
+    }
+  });
+
+  // ---------- Vider le journal ----------
+  clearJson.addEventListener('click', () => {
+    if (!confirm('Effacer définitivement le journal en mémoire ?')) return;
+    responses = [];
+    localStorage.removeItem('station10_responses');
+    updateJsonView();
+    msg.textContent = 'Journal vidé.';
+  });
+</script>
+
 </body>
 </html>
